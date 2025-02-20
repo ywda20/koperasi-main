@@ -99,6 +99,7 @@ if (empty($_POST['id_perkiraan'])) {
                             echo '                      <th class="text-center"><dt>Debet</dt></th>';
                             echo '                      <th class="text-center"><dt>Kredit</dt></th>';
                             echo '                      <th class="text-center"><dt>Saldo</dt></th>';
+                            echo '                      <th class="text-center"><dt>Ket</dt></th>';
                             echo '                  </tr>';
                             echo '              </thead>';
                             echo '              <tbody>';
@@ -117,6 +118,7 @@ if (empty($_POST['id_perkiraan'])) {
                                     $QryTransaksi = mysqli_query($Conn, "SELECT * FROM transaksi WHERE id_transaksi='$IdReferensi'") or die(mysqli_error($Conn));
                                     $DataTransaksi = mysqli_fetch_array($QryTransaksi);
                                     $KategoriTransaksi = $DataTransaksi['kategori'];
+                                    $KetTransaksi = $DataTransaksi['keterangan'];
                                     $LabelTransaksi = "<span class='text-success'>Transaksi $KategoriTransaksi ($IdReferensi)</span>";
                                     $UrlDetail = "index.php?Page=Transaksi&Sub=DetailTransaksi&id=$IdReferensi";
                                 } else {
@@ -246,6 +248,8 @@ if (empty($_POST['id_perkiraan'])) {
                                     echo '      <td align="right">' . $NilaiRp . '</td>';
                                 }
                                 echo '      <td align="right"><b>' . $SaldoRp . '</b></td>';
+                                echo '      <td align="left"><b>' . $KetTransaksi . '</b></td>';
+
                                 echo '  </tr>';
                                 $no++;
                             }
