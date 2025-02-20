@@ -117,7 +117,7 @@ if (empty($_POST['id_perkiraan'])) {
                                     $QryTransaksi = mysqli_query($Conn, "SELECT * FROM transaksi WHERE id_transaksi='$IdReferensi'") or die(mysqli_error($Conn));
                                     $DataTransaksi = mysqli_fetch_array($QryTransaksi);
                                     $KategoriTransaksi = $DataTransaksi['kategori'];
-                                    $LabelTransaksi = "<span class='text-success'>Transaksi $KategoriTransaksi ($IdReferensi)</span>";
+                                    $LabelTransaksi = "<span class='text-success'>Tansaksi $KategoriTransaksi ($IdReferensi)</span>";
                                     $UrlDetail = "index.php?Page=Transaksi&Sub=DetailTransaksi&id=$IdReferensi";
                                 } else {
                                     if (!empty($data['id_simpanan'])) {
