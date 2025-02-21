@@ -157,6 +157,7 @@ if (empty($_POST['id_perkiraan'])) {
                                                 $DataAngsuran = mysqli_fetch_array($Qryangsuran);
                                                 $id_pinjaman = $DataAngsuran['id_pinjaman'];
                                                 $KategoriTransaksi = $DataAngsuran['kategori_angsuran'];
+                                                $KetTransaksi = $DataAngsuran['keterangan'];
                                                 $LabelTransaksi = "<span class='text-success'>Angsuran $KategoriTransaksi ($IdReferensi)</span>";
                                                 $UrlDetail = "index.php?Page=Pinjaman&Sub=DetailPinjaman&id=$id_pinjaman";
                                             } else {
