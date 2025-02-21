@@ -144,6 +144,7 @@ if (empty($_POST['id_perkiraan'])) {
                                             $DataPinjaman = mysqli_fetch_array($QryPinjaman);
                                             $tanggal_pinjaman = $DataPinjaman['tanggal_pinjaman'];
                                             $strtotime = strtotime($tanggal_pinjaman);
+                                            $KetTransaksi = $DataPinjaman['keterangan'];
                                             $tanggal_pinjaman = date('d/m/Y', $strtotime);
                                             $LabelTransaksi = "<span class='text-success'>Pinjaman $tanggal_pinjaman ($IdReferensi)</span>";
                                             $UrlDetail = "index.php?Page=Pinjaman&Sub=DetailPinjaman&id=$IdReferensi";
