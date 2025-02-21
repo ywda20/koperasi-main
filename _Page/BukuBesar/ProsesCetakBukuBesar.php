@@ -155,6 +155,7 @@ if (empty($_GET['periode1'])) {
                             $QryPinjaman = mysqli_query($Conn, "SELECT * FROM pinjaman WHERE id_pinjaman='$IdReferensi'") or die(mysqli_error($Conn));
                             $DataPinjaman = mysqli_fetch_array($QryPinjaman);
                             $tanggal_pinjaman = $DataPinjaman['tanggal_pinjaman'];
+                            $KetTransaksi = $DataPinjaman['keterangan'];
                             $strtotime = strtotime($tanggal_pinjaman);
                             $tanggal_pinjaman = date('d/m/Y', $strtotime);
                             $LabelTransaksi = "<span class='text-success'>Pinjaman $tanggal_pinjaman ($IdReferensi)</span>";
