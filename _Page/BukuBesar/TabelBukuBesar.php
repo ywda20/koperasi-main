@@ -131,6 +131,7 @@ if (empty($_POST['id_perkiraan'])) {
                                         $KategoriTransaksi = $DataSimpanan['kategori'];
                                         $TanggalSimpanan = $DataSimpanan['tanggal'];
                                         $strtotime = strtotime($TanggalSimpanan);
+                                        $KetTransaksi = $DataSimpanan['keterangan'];
                                         $TanggalSimpanan = date('d/m/Y', $strtotime);
                                         $LabelTransaksi = "<span class='text-success'>$KategoriTransaksi $TanggalSimpanan ($IdReferensi)</span>";
                                         $UrlDetail = "index.php?Page=Tabungan&Sub=DetailTabungan&id=$IdReferensi";
