@@ -142,6 +142,7 @@ if (empty($_GET['periode1'])) {
                         $DataSimpanan = mysqli_fetch_array($QrySimpanan);
                         $KategoriTransaksi = $DataSimpanan['kategori'];
                         $TanggalSimpanan = $DataSimpanan['tanggal'];
+                        $KetTransaksi = $DataSimpanan['keterangan'];
                         $strtotime = strtotime($TanggalSimpanan);
                         $TanggalSimpanan = date('d/m/Y', $strtotime);
                         $LabelTransaksi = "<span class='text-success'>$KategoriTransaksi $TanggalSimpanan ($IdReferensi)</span>";
