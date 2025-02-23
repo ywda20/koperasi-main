@@ -182,6 +182,7 @@ if (empty($_GET['periode1'])) {
                                     $sesi_shu = $DatabagiHasil['sesi_shu'];
                                     $LabelTransaksi = "<span class='text-success'>Bagi Hasil $sesi_shu ($IdReferensi)</span>";
                                     $UrlDetail = "index.php?Page=BagiHasil&Sub=DetailBagiHasil&id=$IdReferensi";
+                                    $KetTransaksi = $DatabagiHasil['keterangan']; 
                                 } else {
                                     $IdReferensi = 0;
                                     $Referensi = "None";
