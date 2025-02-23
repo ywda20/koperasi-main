@@ -1,19 +1,19 @@
 <?php
-    $sekarang=date('Y-m-d');
-    //Menangkap data POST id_anggota
-    if(empty($_POST['id_anggota'])){
-        $id_anggota="";
-        $nama="";
-    }else{
-        $id_anggota=$_POST['id_anggota'];
-        //Buka data Anggota
-        $QryAnggota = mysqli_query($Conn,"SELECT * FROM anggota WHERE id_anggota='$id_anggota'")or die(mysqli_error($Conn));
-        $DataAnggota = mysqli_fetch_array($QryAnggota);
-        $id_anggota= $DataAnggota['id_anggota'];
-        $nama= $DataAnggota['nama'];
-    }
-    //Cek auto jurnal
-    $AutoJurnal = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM auto_jurnal WHERE kategori_transaksi='Pinjaman'"));
+$sekarang = date('Y-m-d');
+//Menangkap data POST id_anggota
+if (empty($_POST['id_anggota'])) {
+    $id_anggota = "";
+    $nama = "";
+} else {
+    $id_anggota = $_POST['id_anggota'];
+    //Buka data Anggota
+    $QryAnggota = mysqli_query($Conn, "SELECT * FROM anggota WHERE id_anggota='$id_anggota'") or die(mysqli_error($Conn));
+    $DataAnggota = mysqli_fetch_array($QryAnggota);
+    $id_anggota = $DataAnggota['id_anggota'];
+    $nama = $DataAnggota['nama'];
+}
+//Cek auto jurnal
+$AutoJurnal = mysqli_num_rows(mysqli_query($Conn, "SELECT*FROM auto_jurnal WHERE kategori_transaksi='Pinjaman'"));
 ?>
 <section class="section dashboard">
     <form action="javascript:void(0);" id="ProsesTambahPinjaman">
@@ -28,11 +28,11 @@
                             <div class="col-md-2 text-center mt-3">
                                 <a href="javascript:void(0);" class="btn btn-md btn-info btn-block position-relative" data-bs-toggle="modal" data-bs-target="#ModalAutoJurnal" title="Setting Auto Jurnal">
                                     <i class="bi bi-gear"></i> Auto Jurnal
-                                    <?php if(empty($AutoJurnal)){ ?>
+                                    <?php if (empty($AutoJurnal)) { ?>
                                         <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
                                             <span class="visually-hidden">New alerts</span>
                                         </span>
-                                    <?php }else{ ?>
+                                    <?php } else { ?>
                                         <span class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle">
                                             <span class="visually-hidden">New alerts</span>
                                         </span>
@@ -84,6 +84,10 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="keterangan">Keterangan</label>
+                                <input type="text" name="keterangan" id="keterangan" class="form-control">
+                            </div>
                             <div class="col-md-6 mb-3">
                                 <label for="estimasi_jasa">Estimasi Jasa(Rp/IDR)</label>
                                 <input type="text" name="estimasi_jasa" id="estimasi_jasa" class="form-control format_uang">
