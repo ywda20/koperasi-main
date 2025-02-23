@@ -35,6 +35,12 @@
     </div>
 </div>
 <div class="row">
+    <div class="col-md-12 mb-2">
+        <label for="keterangan">Keterangan</label>
+        <input type="text" name="keterangan" id="keterangan" class="form-control">
+    </div>
+</div>
+<div class="row">
     <div class="col-md-12 mb-2" id="NotifikasiTambahBagiHasil">
         <small class="text-primary">Pastkan data yang anda input sudah benar</small>
     </div>
