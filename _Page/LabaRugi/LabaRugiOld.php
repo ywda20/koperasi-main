@@ -26,32 +26,34 @@
                                 <small>Periode Akhir</small>
                             </div>
                             <div class="col-md-3 mt-2">
-                                <select name="akun_pemasukan[]" id="akun_pemasukan" class="form-control" multiple size="3">
+                                <select name="akun_pemasukan" id="akun_pemasukan" class="form-control">
+                                    <option value="">Pilih</option>
                                     <?php
-                                    $QueryAkun1 = mysqli_query($Conn, "SELECT * FROM akun_perkiraan WHERE level='1' ORDER BY kode ASC");
+                                    $QueryAkun1 = mysqli_query($Conn, "SELECT*FROM akun_perkiraan WHERE level='1' ORDER BY kode ASC");
                                     while ($DataAkun1 = mysqli_fetch_array($QueryAkun1)) {
-                                        $IdPerkiraan = $DataAkun1['id_perkiraan'];
+                                        $IdPerkiraan = $DataAkun1['id_perkiraan '];
                                         $KodeAkun = $DataAkun1['kode'];
                                         $NamaAkun = $DataAkun1['nama'];
                                         echo '<option value="' . $KodeAkun . '">' . $KodeAkun . ' ' . $NamaAkun . '</option>';
                                     }
                                     ?>
                                 </select>
-                                <small>Pilih satu atau lebih (gunakan Ctrl/Cmd + klik)</small>
+                                <small>Akun Pemasukan</small>
                             </div>
                             <div class="col-md-3 mt-2">
-                                <select name="akun_pengeluaran[]" id="akun_pengeluaran" class="form-control" multiple size="3">
+                                <select name="akun_pengeluaran" id="akun_pengeluaran" class="form-control">
+                                    <option value="">Pilih</option>
                                     <?php
-                                    $QueryAkun2 = mysqli_query($Conn, "SELECT * FROM akun_perkiraan WHERE level='1' ORDER BY kode ASC");
+                                    $QueryAkun2 = mysqli_query($Conn, "SELECT*FROM akun_perkiraan WHERE level='1' ORDER BY kode ASC");
                                     while ($DataAkun2 = mysqli_fetch_array($QueryAkun2)) {
-                                        $IdPerkiraan = $DataAkun2['id_perkiraan'];
+                                        $IdPerkiraan = $DataAkun2['id_perkiraan '];
                                         $KodeAkun = $DataAkun2['kode'];
                                         $NamaAkun = $DataAkun2['nama'];
                                         echo '<option value="' . $KodeAkun . '">' . $KodeAkun . ' ' . $NamaAkun . '</option>';
                                     }
                                     ?>
                                 </select>
-                                <small>Pilih satu atau lebih (gunakan Ctrl/Cmd + klik)</small>
+                                <small>Akun Pengeluaran</small>
                             </div>
                             <div class="col-md-2 mt-2">
                                 <button type="submit" class="btn btn-md btn-dark btn-block btn-rounded" title="Tampilkan Laporaa Laba Rugi">

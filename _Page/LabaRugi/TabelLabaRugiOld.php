@@ -1,16 +1,6 @@
 <?php
+//koneksi
 include "../../_Config/Connection.php";
-
-function build_like_clause($Conn, $field, $akun_array)
-{
-    $likes = array();
-    foreach ($akun_array as $akun) {
-        $akun = mysqli_real_escape_string($Conn, $akun);
-        $likes[] = "$field LIKE '%$akun%'";
-    }
-    return '(' . implode(' OR ', $likes) . ')';
-}
-
 //Tangkap periode1
 if (empty($_POST['periode1'])) {
     echo '<div class="card-body">';
@@ -36,7 +26,7 @@ if (empty($_POST['periode1'])) {
         echo '</div>';
     } else {
         //Tangkap akun_pemasukan
-        if (empty($_POST['akun_pemasukan']) || !is_array($_POST['akun_pemasukan'])) {
+        if (empty($_POST['akun_pemasukan'])) {
             echo '<div class="card-body">';
             echo '  <div class="row">';
             echo '      <div class="col-md-12 text-center">';
@@ -48,7 +38,7 @@ if (empty($_POST['periode1'])) {
             echo '</div>';
         } else {
             //Tangkap akun_pengeluaran
-            if (empty($_POST['akun_pengeluaran']) || !is_array($_POST['akun_pengeluaran'])) {
+            if (empty($_POST['akun_pengeluaran'])) {
                 echo '<div class="card-body">';
                 echo '  <div class="row">';
                 echo '      <div class="col-md-12 text-center">';
@@ -61,12 +51,8 @@ if (empty($_POST['periode1'])) {
             } else {
                 $periode2 = $_POST['periode2'];
                 $periode1 = $_POST['periode1'];
-                $akun_pemasukan_array = $_POST['akun_pemasukan'];
-                $akun_pengeluaran_array = $_POST['akun_pengeluaran'];
-
-                $like_pemasukan = build_like_clause($Conn, 'kode_perkiraan', $akun_pemasukan_array);
-                $like_pengeluaran = build_like_clause($Conn, 'kode_perkiraan', $akun_pengeluaran_array);
-
+                $akun_pemasukan = $_POST['akun_pemasukan'];
+                $akun_pengeluaran = $_POST['akun_pengeluaran'];
 ?>
                 <div class="card-body">
                     <div class="row">
@@ -84,15 +70,15 @@ if (empty($_POST['periode1'])) {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="text-center"><b>A.</b></td>
+                                            <td><b>A.</b></td>
                                             <td colspan="4"><b>Transaksi Pemasukan</b></td>
                                         </tr>
                                         <?php
                                         //Data pemasukan
                                         $NoPemasukan = 1;
                                         $JumlahPemasukan = 0;
-
-                                        $QryJurnal = mysqli_query($Conn, "SELECT * FROM jurnal WHERE $like_pemasukan AND tanggal >= '$periode1' AND tanggal <= '$periode2' ORDER BY id_jurnal DESC");
+                                        //KONDISI PENGATURAN MASING FILTER
+                                        $QryJurnal = mysqli_query($Conn, "SELECT*FROM jurnal WHERE (kode_perkiraan like '%$akun_pemasukan%') AND (tanggal>='$periode1') AND (tanggal<='$periode2' OR tanggal<='0') ORDER BY id_jurnal DESC");
                                         while ($DataJurnal = mysqli_fetch_array($QryJurnal)) {
                                             $id_jurnal = $DataJurnal['id_jurnal'];
                                             $id_perkiraan = $DataJurnal['id_perkiraan'];
@@ -102,8 +88,7 @@ if (empty($_POST['periode1'])) {
                                             $d_k = $DataJurnal['d_k'];
                                             $nilai = $DataJurnal['nilai'];
                                             $NominalRp = "Rp " . number_format($nilai, 0, ',', '.');
-                                            $JumlahPemasukan += $nilai;
-
+                                            $JumlahPemasukan = $JumlahPemasukan + $nilai;
                                             if (empty($DataJurnal['id_transaksi'])) {
                                                 if (empty($DataJurnal['id_simpanan'])) {
                                                     if (empty($DataJurnal['id_pinjaman_angsuran'])) {
@@ -112,6 +97,7 @@ if (empty($_POST['periode1'])) {
                                                                 $LabelTransaksi = "<span class='text-danger'>None</span>";
                                                             } else {
                                                                 $id_shu_session = $DataJurnal['id_shu_session'];
+                                                                //buka SHU
                                                                 $QryBagiHasil = mysqli_query($Conn, "SELECT * FROM shu_session WHERE id_shu_session='$id_shu_session'") or die(mysqli_error($Conn));
                                                                 $DatabagiHasil = mysqli_fetch_array($QryBagiHasil);
                                                                 $sesi_shu = $DatabagiHasil['sesi_shu'];
@@ -119,6 +105,7 @@ if (empty($_POST['periode1'])) {
                                                             }
                                                         } else {
                                                             $id_pinjaman = $DataJurnal['id_pinjaman'];
+                                                            //buka pinjaman
                                                             $QryPinjaman = mysqli_query($Conn, "SELECT * FROM pinjaman WHERE id_pinjaman='$id_pinjaman'") or die(mysqli_error($Conn));
                                                             $DataPinjaman = mysqli_fetch_array($QryPinjaman);
                                                             $tanggal_pinjaman = $DataPinjaman['tanggal_pinjaman'];
@@ -126,6 +113,7 @@ if (empty($_POST['periode1'])) {
                                                         }
                                                     } else {
                                                         $id_pinjaman_angsuran = $DataJurnal['id_pinjaman_angsuran'];
+                                                        //buka Angsuran
                                                         $Qryangsuran = mysqli_query($Conn, "SELECT * FROM pinjaman_angsuran WHERE id_pinjaman_angsuran='$id_pinjaman_angsuran'") or die(mysqli_error($Conn));
                                                         $DataAngsuran = mysqli_fetch_array($Qryangsuran);
                                                         $KategoriTransaksi = $DataAngsuran['kategori_angsuran'];
@@ -133,6 +121,7 @@ if (empty($_POST['periode1'])) {
                                                     }
                                                 } else {
                                                     $id_simpanan = $DataJurnal['id_simpanan'];
+                                                    //buka Simpanan
                                                     $QrySimpanan = mysqli_query($Conn, "SELECT * FROM simpanan WHERE id_simpanan='$id_simpanan'") or die(mysqli_error($Conn));
                                                     $DataSimpanan = mysqli_fetch_array($QrySimpanan);
                                                     $KategoriTransaksi = $DataSimpanan['kategori'];
@@ -140,6 +129,7 @@ if (empty($_POST['periode1'])) {
                                                 }
                                             } else {
                                                 $id_transaksi = $DataJurnal['id_transaksi'];
+                                                //buka Transaksi
                                                 $QryTransaksi = mysqli_query($Conn, "SELECT * FROM transaksi WHERE id_transaksi='$id_transaksi'") or die(mysqli_error($Conn));
                                                 $DataTransaksi = mysqli_fetch_array($QryTransaksi);
                                                 $KategoriTransaksi = $DataTransaksi['kategori'];
@@ -156,15 +146,15 @@ if (empty($_POST['periode1'])) {
                                         }
                                         ?>
                                         <tr>
-                                            <td class="text-center"><b>B.</b></td>
+                                            <td><b>B.</b></td>
                                             <td colspan="4"><b>Transaksi Pengeluaran</b></td>
                                         </tr>
                                         <?php
                                         //Data Pengeluaran
                                         $NoPengeluaran = 1;
                                         $JumlahPengeluaran = 0;
-
-                                        $QryJurnal = mysqli_query($Conn, "SELECT * FROM jurnal WHERE $like_pengeluaran AND tanggal >= '$periode1' AND tanggal <= '$periode2' ORDER BY id_jurnal DESC");
+                                        //KONDISI PENGATURAN MASING FILTER
+                                        $QryJurnal = mysqli_query($Conn, "SELECT*FROM jurnal WHERE (kode_perkiraan like '%$akun_pengeluaran%') AND (tanggal>='$periode1') AND (tanggal<='$periode2') ORDER BY id_jurnal DESC");
                                         while ($DataJurnal = mysqli_fetch_array($QryJurnal)) {
                                             $id_jurnal = $DataJurnal['id_jurnal'];
                                             $id_perkiraan = $DataJurnal['id_perkiraan'];
@@ -174,8 +164,6 @@ if (empty($_POST['periode1'])) {
                                             $d_k = $DataJurnal['d_k'];
                                             $nilai = $DataJurnal['nilai'];
                                             $NominalRp = "Rp " . number_format($nilai, 0, ',', '.');
-                                            $JumlahPengeluaran += $nilai;
-
                                             if (empty($DataJurnal['id_transaksi'])) {
                                                 if (empty($DataJurnal['id_simpanan'])) {
                                                     if (empty($DataJurnal['id_pinjaman_angsuran'])) {
@@ -184,6 +172,7 @@ if (empty($_POST['periode1'])) {
                                                                 $LabelTransaksi = "<span class='text-danger'>None</span>";
                                                             } else {
                                                                 $id_shu_session = $DataJurnal['id_shu_session'];
+                                                                //buka SHU
                                                                 $QryBagiHasil = mysqli_query($Conn, "SELECT * FROM shu_session WHERE id_shu_session='$id_shu_session'") or die(mysqli_error($Conn));
                                                                 $DatabagiHasil = mysqli_fetch_array($QryBagiHasil);
                                                                 $sesi_shu = $DatabagiHasil['sesi_shu'];
@@ -191,6 +180,7 @@ if (empty($_POST['periode1'])) {
                                                             }
                                                         } else {
                                                             $id_pinjaman = $DataJurnal['id_pinjaman'];
+                                                            //buka pinjaman
                                                             $QryPinjaman = mysqli_query($Conn, "SELECT * FROM pinjaman WHERE id_pinjaman='$id_pinjaman'") or die(mysqli_error($Conn));
                                                             $DataPinjaman = mysqli_fetch_array($QryPinjaman);
                                                             $tanggal_pinjaman = $DataPinjaman['tanggal_pinjaman'];
@@ -198,6 +188,7 @@ if (empty($_POST['periode1'])) {
                                                         }
                                                     } else {
                                                         $id_pinjaman_angsuran = $DataJurnal['id_pinjaman_angsuran'];
+                                                        //buka Angsuran
                                                         $Qryangsuran = mysqli_query($Conn, "SELECT * FROM pinjaman_angsuran WHERE id_pinjaman_angsuran='$id_pinjaman_angsuran'") or die(mysqli_error($Conn));
                                                         $DataAngsuran = mysqli_fetch_array($Qryangsuran);
                                                         $KategoriTransaksi = $DataAngsuran['kategori_angsuran'];
@@ -205,6 +196,7 @@ if (empty($_POST['periode1'])) {
                                                     }
                                                 } else {
                                                     $id_simpanan = $DataJurnal['id_simpanan'];
+                                                    //buka Simpanan
                                                     $QrySimpanan = mysqli_query($Conn, "SELECT * FROM simpanan WHERE id_simpanan='$id_simpanan'") or die(mysqli_error($Conn));
                                                     $DataSimpanan = mysqli_fetch_array($QrySimpanan);
                                                     $KategoriTransaksi = $DataSimpanan['kategori'];
@@ -212,15 +204,16 @@ if (empty($_POST['periode1'])) {
                                                 }
                                             } else {
                                                 $id_transaksi = $DataJurnal['id_transaksi'];
+                                                //buka Transaksi
                                                 $QryTransaksi = mysqli_query($Conn, "SELECT * FROM transaksi WHERE id_transaksi='$id_transaksi'") or die(mysqli_error($Conn));
                                                 $DataTransaksi = mysqli_fetch_array($QryTransaksi);
                                                 $KategoriTransaksi = $DataTransaksi['kategori'];
                                                 $LabelTransaksi = "<span class='text-success'>Tansaksi $KategoriTransaksi ID.$id_transaksi</span>";
                                             }
+                                            $JumlahPengeluaran = $JumlahPengeluaran + $nilai;
                                             echo '<tr>';
-                                            echo '  <td class="text-center">B.' . $NoPengeluaran . '</td>';
+                                            echo '  <td class="text-center">A.' . $NoPengeluaran . '</td>';
                                             echo '  <td class="text-left">' . $tanggal . '</td>';
-                                            echo '  <td class="text-left">' . $kode_perkiraan . ' ' . $nama_perkiraan . '</td>';
                                             echo '  <td class="text-left">' . $LabelTransaksi . '</td>';
                                             echo '  <td class="text-right">' . $NominalRp . '</td>';
                                             echo '</tr>';
@@ -255,11 +248,8 @@ if (empty($_POST['periode1'])) {
                 <div class="card-footer">
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <a href="_Page/LabaRugi/CetakLabaRugi.php?periode1=<?php echo urlencode($periode1); ?>&periode2=<?php echo urlencode($periode2); ?>&pemasukan=<?php echo urlencode(implode(',', $akun_pemasukan_array)); ?>&pengeluaran=<?php echo urlencode(implode(',', $akun_pengeluaran_array)); ?>" target="_blank" class="btn btn-md btn-dark btn-rounded">
+                            <a href="_Page/LabaRugi/CetakLabaRugi.php?periode1=<?php echo "$periode1"; ?>&periode2=<?php echo "$periode2"; ?>&pemasukan=<?php echo "$akun_pemasukan"; ?>&pengeluaran=<?php echo "$akun_pengeluaran"; ?>" class="btn btn-md btn-dark btn-rounded">
                                 <i class="bi bi-printer"></i> Cetak
-                            </a>
-                            <a href="_Page/LabaRugi/ExportLabaRugiExcel.php?periode1=<?php echo urlencode($periode1); ?>&periode2=<?php echo urlencode($periode2); ?>&pemasukan=<?php echo urlencode(implode(',', $akun_pemasukan_array)); ?>&pengeluaran=<?php echo urlencode(implode(',', $akun_pengeluaran_array)); ?>" target="_blank" class="btn btn-md btn-success btn-rounded ms-2">
-                                <i class="bi bi-file-earmark-spreadsheet"></i> Export ke Excel
                             </a>
                         </div>
                     </div>
